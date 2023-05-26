@@ -1,0 +1,235 @@
+/* 
+ljusblå #57B8FF 
+mörkblå #2176AE 
+brun #B66D0D 
+ljusbrun #FBB13C 
+röd #FE6847
+*/
+
+body,
+html,
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+header {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  padding: 1em;
+  font-size: 1.4em;
+  background-color: #2176ae;
+  color: #fff;
+}
+#root {
+  /* background-color: #d6d6b1; */
+  min-height: 100vh;
+  background: url("./assets/janko-ferlic-sfL_QOnmy00-unsplash.jpg") no-repeat
+    center center/ cover;
+}
+
+main {
+  position: relative;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  background-color: #2176ae;
+  font-size: 1.2em;
+  color: #fff;
+  padding: 0.3em 0;
+}
+.user-info {
+  position: absolute;
+  right: 1em;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+.log-out-btn {
+  color: #111;
+  background-color: #fe6847;
+  padding: 0.3em 0.6em;
+  border: none;
+  border-radius: 1em;
+  cursor: pointer;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  width: 25em;
+  height: 20em;
+  margin: 0 auto;
+  align-items: center;
+  background-color: #57b8ff;
+  margin-top: 5em;
+  border-radius: 1em;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
+    rgba(0, 0, 0, 0.22) 0px 10px 10px;
+}
+
+.login-title {
+  font-size: 2em;
+  margin-top: 0.4em;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1em;
+  align-items: center;
+}
+
+.login-form > input {
+  height: 2em;
+  border-radius: 1em;
+  border: 1px solid #111;
+  padding: 1em 0.5em;
+  margin-bottom: 0.4em;
+}
+
+.login-btn {
+  width: 6em;
+  padding: 0.5em;
+  border-radius: 1em;
+  border: 1px solid #111;
+  margin-bottom: 0.4em;
+  /* background-color: #4ce24c; */
+  background-color: #af125a;
+  color: #fff;
+  cursor: pointer;
+}
+
+.guest-btn {
+  padding: 0.5em 1em;
+  border: 1px solid #111;
+  border-radius: 1em;
+  background-color: #fbb13c;
+  cursor: pointer;
+}
+
+.link-text {
+  font-weight: bolder;
+  color: #111;
+}
+
+.hidden-error {
+  visibility: hidden;
+}
+
+.login-error {
+  color: rgb(214, 4, 4);
+}
+
+.search-input {
+  padding: 0.5em 1em;
+  border: 1px solid black;
+  border-radius: 1em;
+  margin-left: 10%;
+  margin-top: 4em;
+}
+
+.book-table {
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 1em;
+}
+
+tr {
+  text-align: center;
+}
+
+.table-header {
+  background-color: #2176ae;
+  color: #fff;
+}
+
+tr:nth-child(even) {
+  background-color: #2176ae;
+  color: #fff;
+  height: 2em;
+}
+tr:nth-child(odd) {
+  background-color: #57b8ff;
+  height: 2em;
+}
+
+td,
+th {
+  padding: 0.5em;
+}
+
+th {
+  font-size: 1.6em;
+}
+
+td {
+  font-size: 1.4em;
+}
+
+.order-td {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit-container {
+  position: absolute;
+  top: 10em;
+  display: flex;
+  flex-direction: column;
+  width: 25em;
+  height: 22em;
+  background-color: #57b8ff;
+  align-items: center;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  color: #000;
+  border: 1px solid black;
+  border-radius: 1em;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
+    rgba(0, 0, 0, 0.22) 0px 10px 10px;
+}
+
+.edit-title {
+  margin-top: 1em;
+  font-size: 1.8em;
+}
+
+.edit-label {
+  margin-top: 0.6em;
+  font-size: 1.2em;
+}
+
+.edit-input {
+  width: 15em;
+  padding: 0.5em 1em;
+  border: 1px solid black;
+  border-radius: 1em;
+}
+
+.edit-btn-container {
+  margin-top: 0.4em;
+  display: flex;
+  gap: 0.4em;
+}
+
+.edit-btn {
+  padding: 0.5em 0.5em;
+  border-radius: 0.6em;
+  border: 1px solid black;
+  background-color: #4ce24c;
+  font-size: 1em;
+}
+
+.discard-btn {
+  background-color: #fe6847;
+}
