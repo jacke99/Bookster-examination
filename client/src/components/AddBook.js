@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { actionEdit } from "../service/actionService";
-import { fetchBooks } from "../service/bookService";
+import { actionAdd } from "../service/actionService";
 
-export default function AddEditBook({ book, toggle, render }) {
+export default function AddBook({ toggle, render }) {
   const [inputValues, setInputValues] = useState({
-    title: book.title,
-    author: book.author,
-    quantity: book.quantity,
+    title: "",
+    author: "",
+    quantity: "",
   });
 
   function handleChange(event) {
@@ -20,18 +19,17 @@ export default function AddEditBook({ book, toggle, render }) {
   }
 
   async function saveChanges() {
-    const data = await actionEdit(book, inputValues);
+    const data = await actionAdd(inputValues);
     console.log(data);
-    if (data.message === "book updated successfully") {
-      const reRender = await fetchBooks();
-      reRender.forEach((book) => {
+    if (data.message === "book added successfully") {
+      data.context.books.forEach((book) => {
         book.order = 0;
       });
-      render(reRender);
-      alert(`Successfully edited ${book.title}`);
-      toggle(null);
+      render(data.context.books);
+      alert(`Successfully added book`);
+      toggle(false);
     } else {
-      alert(`Failed to edit ${book.title}`);
+      alert(`Failed to add book`);
     }
   }
 
@@ -39,7 +37,7 @@ export default function AddEditBook({ book, toggle, render }) {
     <div className="edit-container">
       <h3 className="edit-title">Add/edit book</h3>
 
-      <label className="edit-label">Title - {book.title}</label>
+      <label className="edit-label">Title:</label>
       <input
         className="edit-input"
         onChange={handleChange}
@@ -49,7 +47,7 @@ export default function AddEditBook({ book, toggle, render }) {
         placeholder="Insert new title..."
       />
 
-      <label className="edit-label">Author - {book.author}</label>
+      <label className="edit-label">Author:</label>
       <input
         className="edit-input"
         onChange={handleChange}
@@ -59,7 +57,7 @@ export default function AddEditBook({ book, toggle, render }) {
         placeholder="Insert new author..."
       />
 
-      <label className="edit-label">Quantity - {book.quantity}</label>
+      <label className="edit-label">Quantity:</label>
       <input
         className="edit-input"
         onChange={handleChange}
@@ -70,9 +68,9 @@ export default function AddEditBook({ book, toggle, render }) {
       />
       <div className="edit-btn-container">
         <button className="edit-btn" onClick={saveChanges}>
-          Save changes
+          Add book
         </button>
-        <button className="edit-btn discard-btn" onClick={() => toggle(null)}>
+        <button className="edit-btn discard-btn" onClick={() => toggle(false)}>
           Discard changes
         </button>
       </div>

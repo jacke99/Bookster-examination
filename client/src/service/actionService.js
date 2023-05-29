@@ -11,6 +11,17 @@ export async function actionEdit(previous, current) {
 
   return data;
 }
+export async function actionAdd(body) {
+  const resp = await performRequest(
+    "http://127.0.0.1:4000/admin/books",
+    "POST",
+    body
+  );
+  console.log(resp);
+  const data = await resp.json();
+
+  return data;
+}
 
 export async function actionDelete(title) {
   const resp = await performRequest(

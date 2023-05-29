@@ -3,7 +3,8 @@ import { buyBooks, fetchBooks, searchBooks } from "../service/bookService";
 import { useEffect, useState } from "react";
 import { parseJwt } from "../service/jwtService";
 import { actionDelete } from "../service/actionService";
-import AddEditBook from "../components/AddEditBook";
+import EditBook from "../components/EditBook";
+import AddBook from "../components/AddBook";
 
 export function loader() {
   const authtoken = sessionStorage.getItem("Authtoken");
@@ -22,6 +23,7 @@ export default function AdminView() {
   const [search, setSearch] = useState("");
   const [books, setBooks] = useState(null);
   const [bookElements, setBookElements] = useState(null);
+  const [addBook, setAddBook] = useState(false);
 
   let loaderBooks = useLoaderData();
 
@@ -92,6 +94,7 @@ export default function AdminView() {
     reRender.forEach((book) => {
       book.order = 0;
     });
+
     setBooks(reRender);
   }
 
@@ -158,7 +161,11 @@ export default function AdminView() {
     console.log(search);
     console.log(value);
     if (value === "") {
-      setBooks(loaderBooks);
+      const data = await fetchBooks();
+      data.forEach((book) => {
+        book.order = 0;
+      });
+      setBooks(data);
     }
   }
 
@@ -181,7 +188,9 @@ export default function AdminView() {
         onKeyDown={handleKeyDown}
         onChange={handleChange}
       />
-      <button>Add new book</button>
+      <button onClick={() => setAddBook(true)} className="add-book-btn">
+        Add new book
+      </button>
       <table data-testid="book-table" className="book-table">
         <thead>
           <tr>
@@ -194,8 +203,10 @@ export default function AdminView() {
         </thead>
         <tbody>{bookElements}</tbody>
       </table>
+
+      {addBook && <AddBook toggle={setAddBook} render={setBooks} />}
       {editBook && (
-        <AddEditBook book={editBook} toggle={setEditBook} render={setBooks} />
+        <EditBook book={editBook} toggle={setEditBook} render={setBooks} />
       )}
     </>
   );

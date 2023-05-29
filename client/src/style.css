@@ -233,3 +233,12 @@ td {
 .discard-btn {
   background-color: #fe6847;
 }
+
+.add-book-btn {
+  padding: 0.5em 1em;
+  background-color: #af125a;
+  border: 1px solid black;
+  border-radius: 1em;
+  color: #fff;
+  margin-left: 4em;
+}
