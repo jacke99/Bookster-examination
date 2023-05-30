@@ -13,7 +13,7 @@ export default function GuestView() {
   let loaderBooks = useLoaderData();
 
   useEffect(() => {
-    setBooks(loaderBooks);
+    setBooks(loaderBooks.books);
   }, [loaderBooks]);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function GuestView() {
     const bookElements = books?.map((book, index) => {
       return (
         <tr key={index}>
-          <td>{book.title}</td>
+          <td data-testid="book-title">{book.title}</td>
           <td>{book.author}</td>
           <td>
             {book.quantity === 0 ? "Out of stock" : book.quantity + " left"}
@@ -35,10 +35,9 @@ export default function GuestView() {
   async function handleChange(event) {
     const { value } = event.target;
     setSearch(value);
-    console.log(search);
-    console.log(value);
     if (value === "") {
-      setBooks(loaderBooks);
+      const data = await fetchBooks();
+      setBooks(data.books);
     }
   }
 
@@ -53,7 +52,8 @@ export default function GuestView() {
   return (
     <>
       <input
-        className="search-input"
+        data-testid="search-input"
+        className="guestview-search-input"
         type="search"
         placeholder="Seatch..."
         onKeyDown={handleKeyDown}

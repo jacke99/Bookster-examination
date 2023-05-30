@@ -60,7 +60,7 @@ export default function Login() {
           Sign in
         </button>
       </Form>
-      <button onClick={() => navigate("/guest")} className="guest-btn">
+      <button onClick={() => navigate("/")} className="guest-btn">
         Proceed as guest user
       </button>
       <p>

@@ -20,10 +20,11 @@ export default function UserView() {
   let loaderBooks = useLoaderData();
 
   useEffect(() => {
-    setBooks(loaderBooks);
-    loaderBooks.forEach((book) => {
+    setBooks(loaderBooks.books);
+    loaderBooks.books.forEach((book) => {
       book.order = 0;
     });
+    sessionStorage.setItem("BooksVersion", loaderBooks.version);
   }, [loaderBooks]);
 
   function increaseOrder(event) {
@@ -63,10 +64,10 @@ export default function UserView() {
     console.log(data);
 
     const reRender = await fetchBooks();
-    reRender.forEach((book) => {
+    reRender.books.forEach((book) => {
       book.order = 0;
     });
-    setBooks(reRender);
+    setBooks(reRender.books);
     if (data.message) {
       alert("Purchase was successful");
     } else {
@@ -75,54 +76,59 @@ export default function UserView() {
   }
 
   useEffect(() => {
-    const bookElements = books?.map((book, index) => {
-      return (
-        <tr key={index}>
-          <td>{book.title}</td>
-          <td>{book.author}</td>
-          <td>
-            {book.quantity === 0 ? "Out of stock" : book.quantity + " left"}
-          </td>
-          <td className="order-td">
-            <button
-              disabled={book.quantity === 0}
-              value={index}
-              onClick={decreaseOrder}
-              data-testid="decrease"
-            >
-              -
-            </button>
-            <div>{book.order}</div>
-            <button
-              disabled={book.quantity === 0}
-              value={index}
-              onClick={increaseOrder}
-              data-testid="increase"
-            >
-              +
-            </button>
-            <button
-              disabled={book.quantity === 0}
-              value={index}
-              onClick={orderBooks}
-            >
-              Order
-            </button>
-          </td>
-        </tr>
-      );
-    });
-    setBookElements(bookElements);
+    if (books !== null) {
+      const bookElements = books?.map((book, index) => {
+        return (
+          <tr key={index}>
+            <td>{book.title}</td>
+            <td>{book.author}</td>
+            <td>
+              {book.quantity === 0 ? "Out of stock" : book.quantity + " left"}
+            </td>
+            <td className="order-td">
+              <button
+                disabled={book.quantity === 0}
+                value={index}
+                onClick={decreaseOrder}
+                data-testid="decrease"
+              >
+                -
+              </button>
+              <div>{book.order}</div>
+              <button
+                disabled={book.quantity === 0}
+                value={index}
+                onClick={increaseOrder}
+                data-testid="increase"
+              >
+                +
+              </button>
+              <button
+                disabled={book.quantity === 0}
+                value={index}
+                onClick={orderBooks}
+              >
+                Order
+              </button>
+            </td>
+          </tr>
+        );
+      });
+      setBookElements(bookElements);
+    }
+
     //eslint-disable-next-line
   }, [books]);
 
   async function handleChange(event) {
     const { value } = event.target;
     setSearch(value);
-    console.log(search);
-    console.log(value);
     if (value === "") {
-      setBooks(loaderBooks);
+      const data = await fetchBooks();
+      data.books.forEach((book) => {
+        book.order = 0;
+      });
+      setBooks(data.books);
     }
   }
 
@@ -139,9 +145,9 @@ export default function UserView() {
   return (
     <>
       <input
-        className="search-input"
+        className="userview-search-input"
         type="search"
-        placeholder="Seatch..."
+        placeholder="Search..."
         onKeyDown={handleKeyDown}
         onChange={handleChange}
       />

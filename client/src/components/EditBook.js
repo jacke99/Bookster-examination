@@ -24,10 +24,10 @@ export default function EditBook({ book, toggle, render }) {
     console.log(data);
     if (data.message === "book updated successfully") {
       const reRender = await fetchBooks();
-      reRender.forEach((book) => {
+      reRender.books.forEach((book) => {
         book.order = 0;
       });
-      render(reRender);
+      render(reRender.books);
       alert(`Successfully edited ${book.title}`);
       toggle(null);
     } else {

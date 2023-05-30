@@ -7,12 +7,11 @@ import {
   Route,
 } from "react-router-dom";
 import UserView, { loader as userLoader } from "./UserView";
+import { loginUser } from "../service/authService";
 
 test("Check if book table is rendered", async () => {
-  sessionStorage.setItem(
-    "Authtoken",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
-  );
+  const resp = await loginUser({ username: "Bob", password: "123" });
+  sessionStorage.setItem("Authtoken", resp.accessToken);
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<Layout />}>

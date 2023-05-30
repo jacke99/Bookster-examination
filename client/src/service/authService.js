@@ -19,3 +19,15 @@ export async function loginUser(credentials) {
 
   return data;
 }
+
+export async function registerUser(credentials) {
+  let resp = await performRequest(
+    "http://127.0.0.1:4000/auth/register",
+    "POST",
+    credentials
+  );
+  const data = await resp.json();
+  console.log(data);
+
+  return data;
+}

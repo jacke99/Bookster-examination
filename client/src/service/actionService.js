@@ -6,7 +6,7 @@ export async function actionEdit(previous, current) {
     "PUT",
     { previous, current }
   );
-  console.log(resp);
+
   const data = await resp.json();
 
   return data;
@@ -17,7 +17,7 @@ export async function actionAdd(body) {
     "POST",
     body
   );
-  console.log(resp);
+
   const data = await resp.json();
 
   return data;
@@ -30,6 +30,6 @@ export async function actionDelete(title) {
     { title }
   );
   const data = await resp.json();
-  console.log(data);
+
   return data;
 }

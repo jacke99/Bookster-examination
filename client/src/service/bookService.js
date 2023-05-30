@@ -3,8 +3,8 @@ import { performRequest } from "./fetchService";
 export async function fetchBooks() {
   const resp = await fetch("http://127.0.0.1:4000/library/books");
   const data = await resp.json();
-  let { books, version } = data;
-  return books;
+
+  return data;
 }
 
 export async function searchBooks(query) {
