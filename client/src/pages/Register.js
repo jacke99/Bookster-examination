@@ -1,3 +1,9 @@
+/**Register component
+ * This component is used to create a new account
+ * This component uses a custom action when the Form is submitted
+ * If the user enters invalid credentials an error message is displayed.
+ */
+
 import { Form, Link, redirect, useActionData } from "react-router-dom";
 import { registerUser } from "../service/authService";
 

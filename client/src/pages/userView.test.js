@@ -10,7 +10,7 @@ import UserView, { loader as userLoader } from "./UserView";
 import { loginUser } from "../service/authService";
 
 test("Check if book table is rendered", async () => {
-  const resp = await loginUser({ username: "Bob", password: "123" });
+  const resp = await loginUser({ username: "Yves", password: "123" });
   sessionStorage.setItem("Authtoken", resp.accessToken);
   const router = createBrowserRouter(
     createRoutesFromElements(

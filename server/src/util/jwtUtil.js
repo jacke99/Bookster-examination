@@ -14,7 +14,7 @@ function generate(claims) {
   let payloadOptions = {
     issuer: "bookster-server-api",
     subject: "student licensed jwt access token",
-    expiresIn: "1s",
+    expiresIn: "45m",
   };
 
   let token = jwt.sign(claims, SUPER_SECRET, payloadOptions);

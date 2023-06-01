@@ -1,3 +1,9 @@
+/**Log in component
+ * This component uses a custom action when the Form is submitted
+ * If the user enters valid credentials, a JWT will be stored in sessionstorage and navigates the user to the page corresponding to their role.
+ * If the user enters invalid credentials an error message is displayed.
+ */
+
 import {
   Form,
   Link,

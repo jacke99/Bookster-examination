@@ -1,14 +1,24 @@
-import { redirect, useLoaderData, useNavigate } from "react-router-dom";
-import { buyBooks, fetchBooks, searchBooks } from "../service/bookService";
+/**AdminView component
+ * This component will render if you log in as an admin user / have the admin role
+ * We display all the books/users on this page through smaller components
+ * When entering this page we recieve all the users and books though our loader
+ * This component uses short-polling to rerender if it recieves new data that does not match the current version.
+ */
+
+import { redirect, useLoaderData } from "react-router-dom";
+import { fetchBooks } from "../service/bookService";
 import { useEffect, useState } from "react";
 import { parseJwt } from "../service/jwtService";
-import { actionDelete } from "../service/actionService";
 import EditBook from "../components/EditBook";
 import AddBook from "../components/AddBook";
-import Users from "../components/Users";
-import Books from "../components/Books";
 import { getUsers } from "../service/userService";
 import UserAction from "../components/UserAction";
+import BookTable from "../components/BookTable";
+import UserTable from "../components/UserTable";
+import { MapBooks } from "../components/MapBooks";
+import { MapUsers } from "../components/MapUsers";
+import { SubHeader } from "../components/SubHeader";
+import { polling } from "../service/pollingService";
 
 export async function loader() {
   const authtoken = sessionStorage.getItem("Authtoken");
@@ -34,7 +44,6 @@ export async function loader() {
 
 export default function AdminView() {
   const [editBook, setEditBook] = useState(null);
-  const [search, setSearch] = useState("");
   const [books, setBooks] = useState(null);
   const [bookElements, setBookElements] = useState(null);
   const [addBook, setAddBook] = useState(false);
@@ -44,8 +53,6 @@ export default function AdminView() {
   const [toggleAction, setToggleAction] = useState(null);
   const [user, setUser] = useState(null);
   const [action, setAction] = useState(null);
-
-  const navigate = useNavigate();
 
   let { loaderBooks, loaderUsers } = useLoaderData();
 
@@ -57,113 +64,11 @@ export default function AdminView() {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const newBooks = await fetchBooks();
-      const currentVersion = sessionStorage.getItem("BooksVersion");
-      console.log(newBooks, currentVersion);
-      if (String(newBooks.version) !== String(currentVersion)) {
-        console.log("they are not the same");
-        for (let i = 0; i < newBooks.books.length; i++) {
-          if (books[i]) {
-            newBooks.books[i].order = books[i].order;
-          } else {
-            newBooks.books[i].order = 0;
-          }
-        }
-
-        setBooks(newBooks.books);
-        sessionStorage.setItem("BooksVersion", newBooks.version);
-      } else {
-        console.log("they are the same");
-      }
+      const newVersion = await polling(books);
+      setBooks(newVersion);
     }, 10000);
     return () => clearInterval(interval);
   }, [books]);
-
-  function increaseOrder(event) {
-    const { value } = event.target;
-    console.log(value);
-    const updateOrder = books.map((book, i) => {
-      if (parseInt(value) === parseInt(i)) {
-        if (book.order < book.quantity) {
-          book.order++;
-        }
-        return book;
-      } else {
-        return book;
-      }
-    });
-    setBooks(updateOrder);
-  }
-  function decreaseOrder(event) {
-    const { value } = event.target;
-    const updateOrder = books.map((book, i) => {
-      if (parseInt(value) === parseInt(i)) {
-        if (book.order > 0) {
-          book.order--;
-        }
-        return book;
-      } else {
-        return book;
-      }
-    });
-    setBooks(updateOrder);
-  }
-
-  async function orderBooks(event) {
-    const { value } = event.target;
-    const order = books[value];
-
-    const data = await buyBooks(order.title, order.order);
-    console.log(data);
-    if (data.message) {
-      const reRender = await fetchBooks();
-      reRender.books.forEach((book) => {
-        book.order = 0;
-      });
-      console.log(reRender);
-      setBooks(reRender.books);
-
-      const reRenderUsers = await getUsers();
-      setUsers(reRenderUsers);
-      alert("Purchase was successful");
-    } else if (data.error === "Digital signing is invalid, request new token") {
-      alert("Session expired, please log in again");
-      navigate("/login");
-    } else {
-      const reRender = await fetchBooks();
-      reRender.books.forEach((book) => {
-        book.order = 0;
-      });
-      console.log(reRender);
-      setBooks(reRender.books);
-
-      const reRenderUsers = await getUsers();
-      setUsers(reRenderUsers);
-      alert("Something went wrong, please try again");
-    }
-  }
-
-  async function deleteBook(event) {
-    const { value } = event.target;
-    const order = books[value];
-
-    const data = await actionDelete(order.title);
-    console.log(data);
-
-    const reRender = await fetchBooks();
-    reRender.books.forEach((book) => {
-      book.order = 0;
-    });
-
-    setBooks(reRender.books);
-  }
-
-  function toggleEdit(event) {
-    const { value } = event.target;
-    const bookToEdit = books[value];
-    console.log(bookToEdit);
-    setEditBook(bookToEdit);
-  }
 
   function handleUserAction(event) {
     const { value, name } = event.target;
@@ -173,140 +78,36 @@ export default function AdminView() {
   }
 
   useEffect(() => {
-    console.log(books);
-    const mappedBooks = books?.map((book, index) => {
-      return (
-        <tr key={index}>
-          <td>{book.title}</td>
-          <td>{book.author}</td>
-          <td>
-            {book.quantity === 0 ? "Out of stock" : book.quantity + " left"}
-          </td>
-          <td className="order-td">
-            <button
-              disabled={book.quantity === 0}
-              value={index}
-              onClick={decreaseOrder}
-              data-testid="decrease"
-            >
-              -
-            </button>
-            <div>{book.order}</div>
-            <button
-              disabled={book.quantity === 0}
-              value={index}
-              onClick={increaseOrder}
-              data-testid="increase"
-            >
-              +
-            </button>
-            <button
-              disabled={book.quantity === 0}
-              value={index}
-              onClick={orderBooks}
-            >
-              Order
-            </button>
-          </td>
-          <td>
-            <button disabled={editBook} value={index} onClick={toggleEdit}>
-              Edit
-            </button>
-            <button disabled={editBook} value={index} onClick={deleteBook}>
-              Delete
-            </button>
-          </td>
-        </tr>
+    if (books !== null) {
+      const mappedBooks = (
+        <MapBooks
+          books={books}
+          setBooks={setBooks}
+          editBook={editBook}
+          setEditBook={setEditBook}
+          setUsers={setUsers}
+        />
       );
-    });
+      setBookElements(mappedBooks);
+    }
 
-    setBookElements(mappedBooks);
     if (users !== null) {
-      const mappedUsers = users?.map((user, index) => {
-        return (
-          <tr key={index}>
-            <td>{user.username}</td>
-            <td>{user.role}</td>
-            <td>{user.purchases ? user.purchases.length : 0}</td>
-            <td>
-              <button
-                disabled={
-                  user.username ===
-                  parseJwt(sessionStorage.getItem("Authtoken")).username
-                }
-                name="promote"
-                value={index}
-                onClick={handleUserAction}
-              >
-                Promote
-              </button>
-              <button
-                disabled={
-                  user.username ===
-                  parseJwt(sessionStorage.getItem("Authtoken")).username
-                }
-                name="delete"
-                value={index}
-                onClick={handleUserAction}
-              >
-                Delete
-              </button>
-            </td>
-          </tr>
-        );
-      });
+      const mappedUsers = (
+        <MapUsers users={users} handleUserAction={handleUserAction} />
+      );
       setUserElements(mappedUsers);
     }
 
     //eslint-disable-next-line
   }, [books, editBook, users]);
 
-  async function handleChange(event) {
-    const { value } = event.target;
-    setSearch(value);
-    if (value === "") {
-      const data = await fetchBooks();
-      data.books.forEach((book) => {
-        book.order = 0;
-      });
-      setBooks(data.books);
-    }
-  }
-
-  async function handleKeyDown(event) {
-    if (event.code === "Enter") {
-      let books = await searchBooks(search);
-      books.forEach((book) => {
-        book.order = 0;
-      });
-      setBooks(books);
-    }
-  }
-
   return (
     <>
-      <div className="controller-container">
-        <input
-          className="search-input"
-          type="search"
-          placeholder="Seatch..."
-          onKeyDown={handleKeyDown}
-          onChange={handleChange}
-        />
-        <button onClick={() => setAddBook(true)} className="add-book-btn">
-          Add new book
-        </button>
-
-        <div className="btn-container">
-          <button onClick={() => setToggleTable(true)} className="book-btn">
-            books
-          </button>
-          <button onClick={() => setToggleTable(false)} className="user-btn">
-            Users
-          </button>
-        </div>
-      </div>
-
+      <SubHeader
+        setBooks={setBooks}
+        setAddBook={setAddBook}
+        setToggleTable={setToggleTable}
+      />
       {toggleAction && (
         <UserAction
           user={user}
@@ -316,8 +117,8 @@ export default function AdminView() {
         />
       )}
 
-      {toggleTable && <Books bookElements={bookElements} />}
-      {!toggleTable && <Users userElements={userElements} />}
+      {toggleTable && <BookTable bookElements={bookElements} />}
+      {!toggleTable && <UserTable userElements={userElements} />}
 
       {addBook && <AddBook toggle={setAddBook} render={setBooks} />}
       {editBook && (

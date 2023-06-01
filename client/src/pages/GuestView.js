@@ -1,6 +1,14 @@
+/**AdminView component
+ * This component will render if you are browsing as a guest user (not logged in)
+ * When entering this page we recieve all the books though our loader
+ * This component uses short-polling to rerender if it recieves new data that does not match the current version.
+ */
+
 import { useLoaderData } from "react-router-dom";
 import { fetchBooks, searchBooks } from "../service/bookService";
 import { useEffect, useState } from "react";
+import { polling } from "../service/pollingService";
+import { MapBooks } from "../components/MapBooks";
 
 export function loader() {
   return fetchBooks();
@@ -17,18 +25,15 @@ export default function GuestView() {
   }, [loaderBooks]);
 
   useEffect(() => {
-    console.log(books);
-    const bookElements = books?.map((book, index) => {
-      return (
-        <tr key={index}>
-          <td data-testid="book-title">{book.title}</td>
-          <td>{book.author}</td>
-          <td>
-            {book.quantity === 0 ? "Out of stock" : book.quantity + " left"}
-          </td>
-        </tr>
-      );
-    });
+    const interval = setInterval(async () => {
+      const newVersion = await polling(books);
+      setBooks(newVersion);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [books]);
+
+  useEffect(() => {
+    const bookElements = <MapBooks books={books} setBooks={setBooks} />;
     setBookElements(bookElements);
   }, [books]);
 

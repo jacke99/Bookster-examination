@@ -1,3 +1,7 @@
+/**UserAction component
+ * This component renders as a pop-up window when an admin want to promote/delete a user
+ */
+
 import {
   actionDeleteUser,
   actionPromoteUser,

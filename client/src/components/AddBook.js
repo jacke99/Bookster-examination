@@ -1,3 +1,9 @@
+/**Component AddBook
+*We render this component whenever the "add book" button is pressed
+
+
+*/
+
 import { useState } from "react";
 import { actionAdd } from "../service/actionService";
 
@@ -39,6 +45,7 @@ export default function AddBook({ toggle, render }) {
 
       <label className="edit-label">Title:</label>
       <input
+        data-testid="add-book-title"
         className="edit-input"
         onChange={handleChange}
         name="title"
@@ -49,6 +56,7 @@ export default function AddBook({ toggle, render }) {
 
       <label className="edit-label">Author:</label>
       <input
+        data-testid="add-book-author"
         className="edit-input"
         onChange={handleChange}
         name="author"
@@ -59,6 +67,7 @@ export default function AddBook({ toggle, render }) {
 
       <label className="edit-label">Quantity:</label>
       <input
+        data-testid="add-book-quantity"
         className="edit-input"
         onChange={handleChange}
         name="quantity"
@@ -67,7 +76,11 @@ export default function AddBook({ toggle, render }) {
         placeholder="Insert new quantity..."
       />
       <div className="edit-btn-container">
-        <button className="edit-btn" onClick={saveChanges}>
+        <button
+          data-testid="save-book-btn"
+          className="edit-btn"
+          onClick={saveChanges}
+        >
           Add book
         </button>
         <button className="edit-btn discard-btn" onClick={() => toggle(false)}>
