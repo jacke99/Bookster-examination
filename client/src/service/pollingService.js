@@ -14,6 +14,6 @@ export async function polling(books) {
     sessionStorage.setItem("BooksVersion", newBooks.version);
     return newBooks.books;
   } else {
-    return books;
+    return undefined;
   }
 }

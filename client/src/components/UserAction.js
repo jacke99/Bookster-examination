@@ -28,7 +28,7 @@ export default function UserAction({ user, setUsers, toggle, action }) {
     }
   }
   return (
-    <div className="edit-container">
+    <div className="edit-user-container">
       <h2 className="edit-title">Change user settings</h2>
       <p>
         Are you sure you wish to {action}. User {user.username}

@@ -27,7 +27,9 @@ export default function GuestView() {
   useEffect(() => {
     const interval = setInterval(async () => {
       const newVersion = await polling(books);
-      setBooks(newVersion);
+      if (newVersion) {
+        setBooks(newVersion);
+      }
     }, 10000);
     return () => clearInterval(interval);
   }, [books]);

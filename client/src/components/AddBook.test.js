@@ -38,9 +38,9 @@ test("Check if book is added to database", async () => {
   fireEvent.click(saveBookBtn);
 
   const response = await fetchBooks();
-  const lastBook = response.books.slice(-1);
+  const addedBook = response.books.slice(-1);
 
-  expect(lastBook[0].title).toBe("Test book");
-  expect(lastBook[0].author).toBe("Jacob");
-  expect(lastBook[0].quantity).toBe("5");
+  expect(addedBook[0].title).toBe("Test book");
+  expect(addedBook[0].author).toBe("Jacob");
+  expect(addedBook[0].quantity).toBe("5");
 });

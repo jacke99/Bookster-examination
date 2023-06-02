@@ -4,15 +4,11 @@
  * If the user enters invalid credentials an error message is displayed.
  */
 
-import {
-  Form,
-  Link,
-  redirect,
-  useActionData,
-  useNavigate,
-} from "react-router-dom";
+import { Link, redirect, useActionData, useNavigate } from "react-router-dom";
 import { loginUser } from "../service/authService";
 import { parseJwt } from "../service/jwtService";
+import LoginForm from "../components/LoginForm";
+import LoginErrorMsg from "../components/LoginErrorMsg";
 
 export async function action({ request }) {
   const formData = await request.formData();
@@ -26,7 +22,6 @@ export async function action({ request }) {
     console.log(data);
     sessionStorage.setItem("Authtoken", data.accessToken);
     const decoded = parseJwt(data.accessToken);
-    console.log(decoded);
     if (decoded.role === "ADMIN") {
       return redirect("/admin");
     }
@@ -42,30 +37,8 @@ export default function Login() {
   return (
     <div className="login-container">
       <h2 className="login-title">Login</h2>
-      {errorMessage ? (
-        <p data-testid="err-msg" className="login-error">
-          {errorMessage}
-        </p>
-      ) : (
-        <p className="hidden-error">|</p>
-      )}
-      <Form className="login-form" method="post" replace>
-        <input
-          data-testid="username-field"
-          name="username"
-          type="text"
-          placeholder="Username..."
-        />
-        <input
-          data-testid="password-field"
-          name="password"
-          type="password"
-          placeholder="Password..."
-        />
-        <button className="login-btn" data-testid="login-btn">
-          Sign in
-        </button>
-      </Form>
+      <LoginErrorMsg errorMessage={errorMessage} />
+      <LoginForm />
       <button onClick={() => navigate("/")} className="guest-btn">
         Proceed as guest user
       </button>
